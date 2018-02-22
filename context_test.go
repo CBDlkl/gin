@@ -976,15 +976,17 @@ func TestContextNegotiationFormat(t *testing.T) {
 	assert.Panics(t, func() { c.NegotiateFormat() })
 	assert.Equal(t, c.NegotiateFormat(MIMEJSON, MIMEXML), MIMEJSON)
 	assert.Equal(t, c.NegotiateFormat(MIMEHTML, MIMEJSON), MIMEHTML)
+	assert.Equal(t, c.NegotiateFormat(MIMEPROTOBUF, MIMEPROTOBUF), MIMEPROTOBUF)
 }
 
 func TestContextNegotiationFormatWithAccept(t *testing.T) {
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.Request, _ = http.NewRequest("POST", "/", nil)
-	c.Request.Header.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+	c.Request.Header.Add("Accept", "text/html,application/xhtml+xml,application/xml,application/x-protobuf;q=0.9,*/*;q=0.8")
 
 	assert.Equal(t, c.NegotiateFormat(MIMEJSON, MIMEXML), MIMEXML)
 	assert.Equal(t, c.NegotiateFormat(MIMEXML, MIMEHTML), MIMEHTML)
+	assert.Equal(t, c.NegotiateFormat(MIMEPROTOBUF, MIMEPROTOBUF), MIMEPROTOBUF)
 	assert.Equal(t, c.NegotiateFormat(MIMEJSON), "")
 }
 
@@ -1267,7 +1269,7 @@ func TestContextGetRawData(t *testing.T) {
 	assert.Equal(t, "Fetch binary post data", string(data))
 }
 
-func TestContext_Protobuf(t *testing.T) {
+func TestContextRenderProtobuf(t *testing.T) {
 	w := httptest.NewRecorder()
 	c, _ := CreateTestContext(w)
 

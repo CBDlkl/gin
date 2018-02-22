@@ -2,11 +2,14 @@ package main
 
 import (
 	"github.com/CBDlkl/gin"
+	"fmt"
+	"ginApi/example"
+	"github.com/golang/protobuf/proto"
 )
 
 var DB = make(map[string]string)
 
-func main() {
+func setupRouter() *gin.Engine {
 	// Disable Console Color
 	// gin.DisableConsoleColor()
 	r := gin.Default()
@@ -14,6 +17,16 @@ func main() {
 	// Ping test
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(200, "pong")
+	})
+
+	r.POST("/proto", func(context *gin.Context) {
+		var test example.Test
+		if context.Bind(&test) == nil {
+			fmt.Println("====== Bind By Query String ======")
+			fmt.Println(test.GetLabel())
+			fmt.Println(test.GetType())
+		}
+		context.Protobuf(200, &example.Test{Label: proto.String(test.GetLabel() + "123")})
 	})
 
 	// Get user value
@@ -53,6 +66,11 @@ func main() {
 		}
 	})
 
+	return r
+}
+
+func main() {
+	r := setupRouter()
 	// Listen and Server in 0.0.0.0:8080
 	r.Run(":8080")
 }

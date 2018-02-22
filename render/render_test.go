@@ -15,6 +15,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/ugorji/go/codec"
+	"fmt"
 )
 
 // TODO unit tests
@@ -183,11 +184,13 @@ func TestRenderProtobuf(t *testing.T) {
 	w := httptest.NewRecorder()
 	data := &example.Test{
 		Label: proto.String("test"),
+		Type:  proto.Int32(20),
 	}
 
 	err := (Protobuf{data}).Render(w)
 
 	assert.NoError(t, err)
+	fmt.Print(w.Body.String())
 	// assert.Equal(t, w.Body.String(), "<map><foo>bar</foo></map>")
 	// assert.Equal(t, w.Header().Get("Content-Type"), "application/xml; charset=utf-8")
 }
