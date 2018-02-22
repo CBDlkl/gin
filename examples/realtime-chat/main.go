@@ -5,7 +5,7 @@ import (
 	"io"
 	"math/rand"
 
-	"github.com/gin-gonic/gin"
+	"github.com/CBDlkl/gin"
 )
 
 func main() {

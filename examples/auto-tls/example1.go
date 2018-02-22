@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/gin-gonic/autotls"
-	"github.com/gin-gonic/gin"
+	"github.com/CBDlkl/autotls"
+	"github.com/CBDlkl/gin"
 )
 
 func main() {

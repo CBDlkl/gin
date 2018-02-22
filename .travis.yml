@@ -12,7 +12,7 @@ git:
 install:
   - make install
 
-go_import_path: github.com/gin-gonic/gin
+go_import_path: github.com/CBDlkl/gin
 
 script:
   - make vet

@@ -11,7 +11,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/gin-gonic/gin/render"
+	"github.com/CBDlkl/gin/render"
 )
 
 // Version is Framework's version
