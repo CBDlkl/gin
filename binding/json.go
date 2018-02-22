@@ -7,10 +7,13 @@ package binding
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin/json"
+	"github.com/json-iterator/go"
 )
 
-var EnableDecoderUseNumber = false
+var (
+	json                   = jsoniter.ConfigCompatibleWithStandardLibrary
+	EnableDecoderUseNumber = false
+)
 
 type jsonBinding struct{}
 

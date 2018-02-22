@@ -22,18 +22,22 @@ import (
 	"github.com/gin-gonic/gin/render"
 )
 
-// Content-Type MIME of the most common data formats.
+// Content-Type MIME of the most common data formats
 const (
 	MIMEJSON              = binding.MIMEJSON
 	MIMEHTML              = binding.MIMEHTML
 	MIMEXML               = binding.MIMEXML
 	MIMEXML2              = binding.MIMEXML2
+	MIMEPROTOBUF          = binding.MIMEPROTOBUF
 	MIMEPlain             = binding.MIMEPlain
 	MIMEPOSTForm          = binding.MIMEPOSTForm
 	MIMEMultipartPOSTForm = binding.MIMEMultipartPOSTForm
 )
 
-const abortIndex int8 = math.MaxInt8 / 2
+const (
+	defaultMemory      = 32 << 20 // 32 MB
+	abortIndex    int8 = math.MaxInt8 / 2
+)
 
 // Context is the most important part of gin. It allows us to pass variables between middleware,
 // manage the flow, validate the JSON of a request and render a JSON response for example.
@@ -48,13 +52,13 @@ type Context struct {
 
 	engine *Engine
 
-	// Keys is a key/value pair exclusively for the context of each request.
+	// Keys is a key/value pair exclusively for the context of each request
 	Keys map[string]interface{}
 
-	// Errors is a list of errors attached to all the handlers/middlewares who used this context.
+	// Errors is a list of errors attached to all the handlers/middlewares who used this context
 	Errors errorMsgs
 
-	// Accepted defines a list of manually accepted formats for content negotiation.
+	// Accepted defines a list of manually accepted formats for content negotiation
 	Accepted []string
 }
 
@@ -84,7 +88,7 @@ func (c *Context) Copy() *Context {
 }
 
 // HandlerName returns the main handler's name. For example if the handler is "handleGetUsers()",
-// this function will return "main.handleGetUsers".
+// this function will return "main.handleGetUsers"
 func (c *Context) HandlerName() string {
 	return nameOfFunction(c.handlers.Last())
 }
@@ -103,7 +107,8 @@ func (c *Context) Handler() HandlerFunc {
 // See example in GitHub.
 func (c *Context) Next() {
 	c.index++
-	for s := int8(len(c.handlers)); c.index < s; c.index++ {
+	s := int8(len(c.handlers))
+	for ; c.index < s; c.index++ {
 		c.handlers[c.index](c)
 	}
 }
@@ -403,7 +408,7 @@ func (c *Context) PostFormArray(key string) []string {
 func (c *Context) GetPostFormArray(key string) ([]string, bool) {
 	req := c.Request
 	req.ParseForm()
-	req.ParseMultipartForm(c.engine.MaxMultipartMemory)
+	req.ParseMultipartForm(defaultMemory)
 	if values := req.PostForm[key]; len(values) > 0 {
 		return values, true
 	}
@@ -423,7 +428,7 @@ func (c *Context) FormFile(name string) (*multipart.FileHeader, error) {
 
 // MultipartForm is the parsed multipart form, including file uploads.
 func (c *Context) MultipartForm() (*multipart.Form, error) {
-	err := c.Request.ParseMultipartForm(c.engine.MaxMultipartMemory)
+	err := c.Request.ParseMultipartForm(defaultMemory)
 	return c.Request.MultipartForm, err
 }
 
@@ -449,27 +454,22 @@ func (c *Context) SaveUploadedFile(file *multipart.FileHeader, dst string) error
 // Depending the "Content-Type" header different bindings are used:
 //     "application/json" --> JSON binding
 //     "application/xml"  --> XML binding
-// otherwise --> returns an error.
+// otherwise --> returns an error
 // It parses the request's body as JSON if Content-Type == "application/json" using JSON or XML as a JSON input.
 // It decodes the json payload into the struct specified as a pointer.
-// It writes a 400 error and sets Content-Type header "text/plain" in the response if input is not valid.
+// Like ParseBody() but this method also writes a 400 error if the json is not valid.
 func (c *Context) Bind(obj interface{}) error {
 	b := binding.Default(c.Request.Method, c.ContentType())
 	return c.MustBindWith(obj, b)
 }
 
-// BindJSON is a shortcut for c.MustBindWith(obj, binding.JSON).
+// BindJSON is a shortcut for c.MustBindWith(obj, binding.JSON)
 func (c *Context) BindJSON(obj interface{}) error {
 	return c.MustBindWith(obj, binding.JSON)
 }
 
-// BindQuery is a shortcut for c.MustBindWith(obj, binding.Query).
-func (c *Context) BindQuery(obj interface{}) error {
-	return c.MustBindWith(obj, binding.Query)
-}
-
-// MustBindWith binds the passed struct pointer using the specified binding engine.
-// It will abort the request with HTTP 400 if any error ocurrs.
+// MustBindWith binds the passed struct pointer using the specified binding
+// engine. It will abort the request with HTTP 400 if any error ocurrs.
 // See the binding package.
 func (c *Context) MustBindWith(obj interface{}, b binding.Binding) (err error) {
 	if err = c.ShouldBindWith(obj, b); err != nil {
@@ -479,30 +479,8 @@ func (c *Context) MustBindWith(obj interface{}, b binding.Binding) (err error) {
 	return
 }
 
-// ShouldBind checks the Content-Type to select a binding engine automatically,
-// Depending the "Content-Type" header different bindings are used:
-//     "application/json" --> JSON binding
-//     "application/xml"  --> XML binding
-// otherwise --> returns an error
-// It parses the request's body as JSON if Content-Type == "application/json" using JSON or XML as a JSON input.
-// It decodes the json payload into the struct specified as a pointer.
-// Like c.Bind() but this method does not set the response status code to 400 and abort if the json is not valid.
-func (c *Context) ShouldBind(obj interface{}) error {
-	b := binding.Default(c.Request.Method, c.ContentType())
-	return c.ShouldBindWith(obj, b)
-}
-
-// ShouldBindJSON is a shortcut for c.ShouldBindWith(obj, binding.JSON).
-func (c *Context) ShouldBindJSON(obj interface{}) error {
-	return c.ShouldBindWith(obj, binding.JSON)
-}
-
-// ShouldBindQuery is a shortcut for c.ShouldBindWith(obj, binding.Query).
-func (c *Context) ShouldBindQuery(obj interface{}) error {
-	return c.ShouldBindWith(obj, binding.Query)
-}
-
-// ShouldBindWith binds the passed struct pointer using the specified binding engine.
+// ShouldBindWith binds the passed struct pointer using the specified binding
+// engine.
 // See the binding package.
 func (c *Context) ShouldBindWith(obj interface{}, b binding.Binding) error {
 	return b.Bind(c.Request, obj)
@@ -518,17 +496,17 @@ func (c *Context) ClientIP() string {
 			clientIP = clientIP[0:index]
 		}
 		clientIP = strings.TrimSpace(clientIP)
-		if clientIP != "" {
+		if len(clientIP) > 0 {
 			return clientIP
 		}
 		clientIP = strings.TrimSpace(c.requestHeader("X-Real-Ip"))
-		if clientIP != "" {
+		if len(clientIP) > 0 {
 			return clientIP
 		}
 	}
 
 	if c.engine.AppEngine {
-		if addr := c.requestHeader("X-Appengine-Remote-Addr"); addr != "" {
+		if addr := c.Request.Header.Get("X-Appengine-Remote-Addr"); addr != "" {
 			return addr
 		}
 	}
@@ -556,14 +534,17 @@ func (c *Context) IsWebsocket() bool {
 }
 
 func (c *Context) requestHeader(key string) string {
-	return c.Request.Header.Get(key)
+	if values, _ := c.Request.Header[key]; len(values) > 0 {
+		return values[0]
+	}
+	return ""
 }
 
 /************************************/
 /******** RESPONSE RENDERING ********/
 /************************************/
 
-// bodyAllowedForStatus is a copy of http.bodyAllowedForStatus non-exported function.
+// bodyAllowedForStatus is a copy of http.bodyAllowedForStatus non-exported function
 func bodyAllowedForStatus(status int) bool {
 	switch {
 	case status >= 100 && status <= 199:
@@ -576,35 +557,31 @@ func bodyAllowedForStatus(status int) bool {
 	return true
 }
 
-// Status sets the HTTP response code.
 func (c *Context) Status(code int) {
 	c.writermem.WriteHeader(code)
 }
 
-// Header is a intelligent shortcut for c.Writer.Header().Set(key, value).
+// Header is a intelligent shortcut for c.Writer.Header().Set(key, value)
 // It writes a header in the response.
 // If value == "", this method removes the header `c.Writer.Header().Del(key)`
 func (c *Context) Header(key, value string) {
-	if value == "" {
+	if len(value) == 0 {
 		c.Writer.Header().Del(key)
 	} else {
 		c.Writer.Header().Set(key, value)
 	}
 }
 
-// GetHeader returns value from request headers.
+// GetHeader returns value from request headers
 func (c *Context) GetHeader(key string) string {
 	return c.requestHeader(key)
 }
 
-// GetRawData return stream data.
+// GetRawData return stream data
 func (c *Context) GetRawData() ([]byte, error) {
 	return ioutil.ReadAll(c.Request.Body)
 }
 
-// SetCookie adds a Set-Cookie header to the ResponseWriter's headers.
-// The provided cookie must have a valid Name. Invalid cookies may be
-// silently dropped.
 func (c *Context) SetCookie(name, value string, maxAge int, path, domain string, secure, httpOnly bool) {
 	if path == "" {
 		path = "/"
@@ -620,10 +597,6 @@ func (c *Context) SetCookie(name, value string, maxAge int, path, domain string,
 	})
 }
 
-// Cookie returns the named cookie provided in the request or
-// ErrNoCookie if not found. And return the named cookie is unescaped.
-// If multiple cookies match the given name, only one cookie will
-// be returned.
 func (c *Context) Cookie(name string) (string, error) {
 	cookie, err := c.Request.Cookie(name)
 	if err != nil {
@@ -685,6 +658,12 @@ func (c *Context) XML(code int, obj interface{}) {
 // YAML serializes the given struct as YAML into the response body.
 func (c *Context) YAML(code int, obj interface{}) {
 	c.Render(code, render.YAML{Data: obj})
+}
+
+// Protobuf serializes the given struct as PB binary-stream into response body
+// It also sets the Content-Type as "application/x-protobuf"
+func (c *Context) Protobuf(code int, obj interface{}) {
+	c.Render(code, render.Protobuf{Data: obj})
 }
 
 // String writes the given string into the response body.
@@ -750,6 +729,7 @@ type Negotiate struct {
 	JSONData interface{}
 	XMLData  interface{}
 	Data     interface{}
+	PBData   interface{}
 }
 
 func (c *Context) Negotiate(code int, config Negotiate) {
@@ -765,7 +745,9 @@ func (c *Context) Negotiate(code int, config Negotiate) {
 	case binding.MIMEXML:
 		data := chooseData(config.XMLData, config.Data)
 		c.XML(code, data)
-
+	case binding.MIMEPROTOBUF:
+		data := chooseData(config, config.Data)
+		c.Protobuf(code, data)
 	default:
 		c.AbortWithError(http.StatusNotAcceptable, errors.New("the accepted formats are not offered by the server"))
 	}

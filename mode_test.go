@@ -17,21 +17,21 @@ func init() {
 }
 
 func TestSetMode(t *testing.T) {
-	assert.Equal(t, testCode, ginMode)
-	assert.Equal(t, TestMode, Mode())
+	assert.Equal(t, ginMode, testCode)
+	assert.Equal(t, Mode(), TestMode)
 	os.Unsetenv(ENV_GIN_MODE)
 
 	SetMode(DebugMode)
-	assert.Equal(t, debugCode, ginMode)
-	assert.Equal(t, DebugMode, Mode())
+	assert.Equal(t, ginMode, debugCode)
+	assert.Equal(t, Mode(), DebugMode)
 
 	SetMode(ReleaseMode)
-	assert.Equal(t, releaseCode, ginMode)
-	assert.Equal(t, ReleaseMode, Mode())
+	assert.Equal(t, ginMode, releaseCode)
+	assert.Equal(t, Mode(), ReleaseMode)
 
 	SetMode(TestMode)
-	assert.Equal(t, testCode, ginMode)
-	assert.Equal(t, TestMode, Mode())
+	assert.Equal(t, ginMode, testCode)
+	assert.Equal(t, Mode(), TestMode)
 
 	assert.Panics(t, func() { SetMode("unknown") })
 }
