@@ -671,6 +671,18 @@ func (c *Context) String(code int, format string, values ...interface{}) {
 	c.Render(code, render.String{Format: format, Data: values})
 }
 
+// Automatic return json or protobuffer by header content-tyep
+func (c *Context) AutoReturn(code int, obj interface{}){
+	switch c.ContentType() {
+	case "application/x-protobuf":
+		c.Protobuf(code, obj)
+		break
+	case "application/json":
+		c.JSON(code, obj)
+		break
+	}
+}
+
 // Redirect returns a HTTP redirect to the specific location.
 func (c *Context) Redirect(code int, location string) {
 	c.Render(-1, render.Redirect{
