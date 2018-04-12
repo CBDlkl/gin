@@ -12,7 +12,7 @@ git:
 install:
   - make install
 
-go_import_path: github.com/CBDlkl/gin
+go_import_path: github.com/li-keli/gin
 
 script:
   - make vet

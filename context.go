@@ -18,8 +18,8 @@ import (
 	"time"
 
 	"github.com/gin-contrib/sse"
-	"github.com/CBDlkl/gin/binding"
-	"github.com/CBDlkl/gin/render"
+	"github.com/li-keli/gin/binding"
+	"github.com/li-keli/gin/render"
 )
 
 // Content-Type MIME of the most common data formats

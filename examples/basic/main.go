@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/CBDlkl/gin"
+	"github.com/li-keli/gin"
 	"fmt"
 	"ginApi/example"
 	"github.com/golang/protobuf/proto"

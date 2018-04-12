@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/CBDlkl/autotls"
-	"github.com/CBDlkl/gin"
+	"github.com/li-keli/autotls"
+	"github.com/li-keli/gin"
 	"golang.org/x/crypto/acme/autocert"
 )
 

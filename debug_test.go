@@ -64,7 +64,7 @@ func TestDebugPrintRoutes(t *testing.T) {
 	defer teardown()
 
 	debugPrintRoute("GET", "/path/to/route/:param", HandlersChain{func(c *Context) {}, handlerNameTest})
-	assert.Regexp(t, `^\[GIN-debug\] GET    /path/to/route/:param     --> (.*/vendor/)?github.com/CBDlkl/gin.handlerNameTest \(2 handlers\)\n$`, w.String())
+	assert.Regexp(t, `^\[GIN-debug\] GET    /path/to/route/:param     --> (.*/vendor/)?github.com/li-keli/gin.handlerNameTest \(2 handlers\)\n$`, w.String())
 }
 
 func TestDebugPrintLoadTemplate(t *testing.T) {

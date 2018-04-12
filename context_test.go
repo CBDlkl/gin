@@ -20,7 +20,7 @@ import (
 	"github.com/gin-contrib/sse"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
-	"github.com/CBDlkl/gin/binding/example"
+	"github.com/li-keli/gin/binding/example"
 	"github.com/golang/protobuf/proto"
 )
 
@@ -315,7 +315,7 @@ func TestContextHandlerName(t *testing.T) {
 	c, _ := CreateTestContext(httptest.NewRecorder())
 	c.handlers = HandlersChain{func(c *Context) {}, handlerNameTest}
 
-	assert.Regexp(t, "^(.*/vendor/)?github.com/CBDlkl/gin.handlerNameTest$", c.HandlerName())
+	assert.Regexp(t, "^(.*/vendor/)?github.com/li-keli/gin.handlerNameTest$", c.HandlerName())
 }
 
 func handlerNameTest(c *Context) {

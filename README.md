@@ -20,7 +20,7 @@ $ cat example.go
 ```go
 package main
 
-import "github.com/CBDlkl/gin"
+import "github.com/li-keli/gin"
 
 func main() {
 	r := gin.Default()
@@ -94,13 +94,13 @@ BenchmarkZeus_GithubAll 		| 2000 		| 944234 	| 300688 	| 2648
 1. Download and install it:
 
 ```sh
-$ go get github.com/CBDlkl/gin
+$ go get github.com/li-keli/gin
 ```
 
 2. Import it in your code:
 
 ```go
-import "github.com/CBDlkl/gin"
+import "github.com/li-keli/gin"
 ```
 
 3. (Optional) Import `net/http`. This is required for example if using constants such as `http.StatusOK`.
@@ -126,13 +126,13 @@ $ mkdir -p ~/go/src/github.com/myusername/project && cd "$_"
 
 ```sh
 $ govendor init
-$ govendor fetch github.com/CBDlkl/gin@v1.2
+$ govendor fetch github.com/li-keli/gin@v1.2
 ```
 
 4. Copy a starting template inside your project
 
 ```sh
-$ curl https://raw.githubusercontent.com/CBDlkl/gin/master/examples/basic/main.go > main.go
+$ curl https://raw.githubusercontent.com/li-keli/gin/master/examples/basic/main.go > main.go
 ```
 
 5. Run your project
@@ -266,7 +266,7 @@ id: 1234; page: 1; name: manu; message: this_is_great
 
 #### Single file
 
-References issue [#774](https://github.com/CBDlkl/gin/issues/774) and detail [example code](examples/upload-file/single).
+References issue [#774](https://github.com/li-keli/gin/issues/774) and detail [example code](examples/upload-file/single).
 
 ```go
 func main() {
@@ -456,13 +456,13 @@ func main() {
 
 ### Bind Query String
 
-See the [detail information](https://github.com/CBDlkl/gin/issues/742#issuecomment-264681292).
+See the [detail information](https://github.com/li-keli/gin/issues/742#issuecomment-264681292).
 
 ```go
 package main
 
 import "log"
-import "github.com/CBDlkl/gin"
+import "github.com/li-keli/gin"
 
 type Person struct {
 	Name    string `form:"name"`
@@ -479,7 +479,7 @@ func startPage(c *gin.Context) {
 	var person Person
 	// If `GET`, only `Form` binding engine (`query`) used.
 	// If `POST`, first checks the `content-type` for `JSON` or `XML`, then uses `Form` (`form-data`).
-	// See more at https://github.com/CBDlkl/gin/blob/master/binding/binding.go#L48
+	// See more at https://github.com/li-keli/gin/blob/master/binding/binding.go#L48
 	if c.Bind(&person) == nil {
 		log.Println(person.Name)
 		log.Println(person.Address)
@@ -491,7 +491,7 @@ func startPage(c *gin.Context) {
 
 ### Bind HTML checkboxes
 
-See the [detail information](https://github.com/CBDlkl/gin/issues/129#issuecomment-124260092)
+See the [detail information](https://github.com/li-keli/gin/issues/129#issuecomment-124260092)
 
 main.go
 
@@ -541,7 +541,7 @@ result:
 package main
 
 import (
-	"github.com/CBDlkl/gin"
+	"github.com/li-keli/gin"
 )
 
 type LoginForm struct {
@@ -953,8 +953,8 @@ package main
 import (
 	"log"
 
-	"github.com/CBDlkl/autotls"
-	"github.com/CBDlkl/gin"
+	"github.com/li-keli/autotls"
+	"github.com/li-keli/gin"
 )
 
 func main() {
@@ -978,8 +978,8 @@ package main
 import (
 	"log"
 
-	"github.com/CBDlkl/autotls"
-	"github.com/CBDlkl/gin"
+	"github.com/li-keli/autotls"
+	"github.com/li-keli/gin"
 	"golang.org/x/crypto/acme/autocert"
 )
 
@@ -1006,7 +1006,7 @@ func main() {
 Do you want to graceful restart or stop your web server?
 There are some ways this can be done.
 
-We can use [fvbock/endless](https://github.com/fvbock/endless) to replace the default `ListenAndServe`. Refer issue [#296](https://github.com/CBDlkl/gin/issues/296) for more details.
+We can use [fvbock/endless](https://github.com/fvbock/endless) to replace the default `ListenAndServe`. Refer issue [#296](https://github.com/li-keli/gin/issues/296) for more details.
 
 ```go
 router := gin.Default()
@@ -1037,7 +1037,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/CBDlkl/gin"
+	"github.com/li-keli/gin"
 )
 
 func main() {
@@ -1075,9 +1075,9 @@ func main() {
 }
 ```
 
-## Users  [![Sourcegraph](https://sourcegraph.com/github.com/CBDlkl/gin/-/badge.svg)](https://sourcegraph.com/github.com/CBDlkl/gin?badge)
+## Users  [![Sourcegraph](https://sourcegraph.com/github.com/li-keli/gin/-/badge.svg)](https://sourcegraph.com/github.com/li-keli/gin?badge)
 
-Awesome project lists using [Gin](https://github.com/CBDlkl/gin) web framework.
+Awesome project lists using [Gin](https://github.com/li-keli/gin) web framework.
 
 * [drone](https://github.com/drone/drone): Drone is a Continuous Delivery platform built on Docker, written in Go
 * [gorush](https://github.com/appleboy/gorush): A push notification server written in Go.

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/CBDlkl/gin"
+	"github.com/li-keli/gin"
 	"github.com/thinkerou/favicon"
 )
 

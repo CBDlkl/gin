@@ -7,7 +7,7 @@ package gin
 import (
 	"log"
 
-	"github.com/CBDlkl/gin/binding"
+	"github.com/li-keli/gin/binding"
 )
 
 // BindWith binds the passed struct pointer using the specified binding engine.

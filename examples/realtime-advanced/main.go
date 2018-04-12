@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/CBDlkl/gin"
+	"github.com/li-keli/gin"
 )
 
 func main() {

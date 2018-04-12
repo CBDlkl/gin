@@ -8,7 +8,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/CBDlkl/gin/binding"
+	"github.com/li-keli/gin/binding"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/CBDlkl/gin/binding/example"
+	"github.com/li-keli/gin/binding/example"
 	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/ugorji/go/codec"

@@ -8,7 +8,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/CBDlkl/gin/binding"
+	"github.com/li-keli/gin/binding"
 )
 
 const ENV_GIN_MODE = "GIN_MODE"
